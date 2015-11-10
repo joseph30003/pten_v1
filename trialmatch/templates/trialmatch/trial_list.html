@@ -16,23 +16,24 @@
 		
     <body>
 	<div class="container-fluid">
-	<form  method="post">
-		<div class="form-group">
+	<form  action="/trialmatch/search/" method="post" >
+			{% csrf_token %}
+			<div class="form-group">
 			<div class="col-md-4">
 				<label for="exampleInputDisease">Enter the disease of the patient</label>
-				<input type="text" class="form-control" id="disease" placeholder="Disease Type">
+				<input type="text" class="form-control" id="disease" placeholder="Disease Type" name="diseaseType">
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-md-2">
 				<label for="exampleInputAge">Age in years</label>
-				<input type="text" class="form-control" id="age" placeholder="Age">	
+				<input type="text" class="form-control" id="age" placeholder="Age" name="age">	
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-md-2">
 				<label for="exampleInputMale">Gender</label>
-				<select class="form-control" id="gender">
+				<select class="form-control" id="gender" name="gender">
 					<option>Select</option>
 					<option>Male</option>
 					<option>Female</option>
@@ -43,58 +44,39 @@
 		<div class="form-group">
 			<div class="col-md-2">
 				<label for="exampleInputGene">Gene Mutation</label>
-				<input type="text" class="form-control" id="gene" placeholder="Gene">
+				<input type="text" class="form-control" id="gene" placeholder="Gene" name="geneType">
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-md-2">
 				<label for="exampleInputAAS">Amino Acid Substitution</label>
-				<input type="text" class="form-control" id="aas" placeholder="AAS">
+				<input type="text" class="form-control" id="aas" placeholder="AAS" name="aas">
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-md-2">
 				<label for="exampleInputStage">Stage</label>
-				<select class="form-control" id="stage">
+				<select class="form-control" id="stage" name="stage">
 					<option>Select</option>
-					<option>I</option>
-					<option>II</option>
-					<option>III</option>
-					<option>IV</option>
+					<option>Stage I</option>
+					<option>Stage II</option>
+					<option>Stage III</option>
+					<option>Stage IV</option>
 				</select>
 			</div>
 		</div>
-		<div class="form-group">
-			<div class="col-md-2 ">
-				<label for="exampleInputGrade">Grade</label>
-				<select class="form-control" id="grade">
-					<option>Select</option>
-					<option>I</option>
-					<option>II</option>
-					<option>III</option>
-				</select>
-				
-			</div>
-		</div>
+		
 		<div class="col-md-2">
-		<button type="button" class="btn btn-default" >Submit</button>
+		<div class="buttonsub">
+		<input type="submit" class="btn btn-default" >
+		</div>
 		</div>
 		
 	</form>
 	</div>
 	
 	
-	{% for i in records %}
-	{% for k,v in i.items %}
-    <div class = "col-md-offset-1 col-md-11">
-        <p>{{ k }}</p>
-    </div>
-	<div class = "col-md-offset-1 col-md-10" style="background-color:lavender;">
-		<p>{{v}}</p>
-	</div>
-	{% endfor %}
-	{% endfor %}
-	
+		
 	
 	</body>
 </html>

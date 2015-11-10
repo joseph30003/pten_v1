@@ -1,0 +1,23 @@
+
+{% for i in records %}
+<div class = "col-md-offset-1 col-md-10" style="background-color:lavender;">    
+	{% for k,v in i.items %}
+<div class = "col-md-offset-1 col-md-11">
+	
+    		{% if k == "NCTID" %}
+		
+		<p><b>NCT ID:  </b><a target="_blank" href="https://clinicaltrials.gov/ct2/show/{{ v }}"> {{ v }} </a></p>
+		{% endif %}
+		{% if k == "Title" %}
+		
+		<p><b>Title:  </b>{{v | truncatewords:30  }} </p>
+		{% endif %}	    
+		{% if k == "Purpose" %}
+		
+		<p><b>Purpose:  </b>{{v | truncatewords:50  }} </p>
+		{% endif %}
+		
+    </div>
+	{% endfor %}
+    </div>
+	{% endfor %}
