@@ -16,6 +16,32 @@ def current_datetime(request):
 def trial_list(request):
 	
 	return render(request,'trialmatch/trial_list.html')
+	
+def trialpage(request):
+	value = request.GET['rec']
+	path = 'http://127.0.0.1:9200/clinicaltrials/mappedTrials_v2/' + value
+	record = requests.get(path)
+	record = record.json()
+	rec = {}
+	rec["source"] = {}
+	rec["source"]["IC"] = {}
+	rec["source"]["EC"] = {}
+	for field in record:
+		if field == "_source":
+			rec["source"] = record[field]
+			if "maximumAge" in record[field]:
+				rec["source"]["maximumAge"] = int(record[field]["maximumAge"])/525600
+			if "minimumAge" in record[field]:
+				rec["source"]["minimumAge"] = int(record[field]["minimumAge"])/525600
+			if "Inclusion Criteria" in record[field]:
+				rec["source"]["IC"] = record[field]["Inclusion Criteria"]
+			if "Exclusion Criteria" in record[field]:
+				rec["source"]["EC"] = record[field]["Exclusion Criteria"]
+		elif field == "_id":
+			rec["id"] = record[field]
+		else:
+			rec[field] = record[field]	
+	return render(request,'trialmatch/trialpage.html',{'rec':rec})
 
 def search(request):
 	disease = request.POST['diseaseType']
@@ -32,6 +58,13 @@ def search(request):
 	body["query"]["bool"]["must"] = []
 	body["query"]["bool"]["should"] = []
 	
+	body["highlight"] = {}
+	body["highlight"]["fields"] = {}
+	body["highlight"]["fields"]["Purpose"] = {"number_of_fragments":0}
+	body["highlight"]["fields"]["official_title"]={"number_of_fragments":0}
+	body["highlight"]["pre_tags"] = ["<mark>"]
+	body["highlight"]["post_tags"] = ["</mark>"]
+			
 	if disease:
 		body["query"]["bool"]["must"].append({
                         "multi_match":
@@ -97,22 +130,24 @@ def search(request):
                 }
 
         	})
-               
 	records = requests.post('http://127.0.0.1:9200/clinicaltrials/mappedTrials_v2/_search', data=json.dumps(body))
 	records = records.json()["hits"]["hits"]
 	ls = []
+
 	for i in records:
 		rec = {}
-		rec['Title'] = i['_source']['brief_title']
-		rec['Purpose'] = i['_source']['Purpose']
-		rec['NCTID'] = i['_id']
-		rec['MaximumAge'] = i['_source']['maximumAge']
-		rec['MinimumAge'] = i['_source']['minimumAge']
-		rec['Gender'] = i['_source']['gender']
+		for field in i:
+			if field == "_source":
+				rec["source"] = i[field]
+			elif field == "_id":
+				rec["id"] = i[field]
+			else:
+				rec[field] = i[field]
+			
 		ls.append(rec)
 	records = ls    	#t = loader.get_template('template/trial_list.html',{'records':records})
    	#c = Context({ 'query': query,})
-	return render(request,'trialmatch/searchResults.html',{'records':records})
+	return render(request,'trialmatch/searchResults.html',{'records': ls})
 	
 def testsearch(request):
 	disease = request.POST['diseaseType']

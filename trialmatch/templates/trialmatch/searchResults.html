@@ -29,32 +29,35 @@ mark {
 <div class="container-fluid" >
 <div  id="map" style=" float:left; width:45%; margin-left:10px;"></div>
 <div class="list-group" >
+
+
 {% for i in records %}
-<div  class="list-group-item" onclick="location.href='http://www.google.com';"  style="cursor:pointer; background-color:lavender;  width:50%; margin: 2%; float:right;">    
-	{% for k,v in i.items %}
-<div >
-	
-    		{% if k == "NCTID" %}
-		
-		<p><b>NCT ID:  </b><a target="_blank" href="https://clinicaltrials.gov/ct2/show/{{ v }}"> {{ v }} </a></p>
-		{% endif %}
-		{% if k == "Title" %}
-		<p>
-		<b>Title:  </b>{{v | truncatewords:30  }} </p>
-		{% endif %}	    
-		{% if k == "Purpose" %}
-		<p>
-		<b> Purpose:  </b>
-		
-		{% for j in v %}
-		{{j | safe }}
-		{% endfor %}
-		</p>
-		{% endif %}
-		
+
+<div  class="list-group-item" style="cursor:pointer; background-color:lavender;  width:50%; margin: 2%; float:right;" type ="submit">
+ 
+
+		<p><b>NCT ID:  </b><a target="_blank" href="https://clinicaltrials.gov/ct2/show/{{ i.id }}"> {{ i.id }} </a></p>
+	   	<p><b>Title:  </b>{% if i.highlight.official_title.0 %}
+	   	{{  i.highlight.official_title.0  | truncatewords:30 |safe }}
+	   	{% elif i.source.official_title %}
+	   	{{ i.source.official_title | truncatewords:30 }}
+	   	{% else %}
+	   	{{ i.source.brief_title }}
+	   	{% endif %} </p>
+	   	<p><b> Purpose:  </b>	{% if i.highlight.Purpose.0 %}
+	   	{{  i.highlight.Purpose.0  | truncatewords:30 |safe }}
+	   	{% else %}
+	   	{{ i.source.Purpose | truncatewords:30 }}
+	   	{% endif %} </p>
+	   	<form name="formName" action="/trialmatch/trialpage/" method ="get" >  
+		{% csrf_token %}
+		<input type="hidden" name="rec" value={{ i.id }} >
+		<input type="submit" value="See Details .." style="background: transparent; float:right;" >
+		</form>
+	   		   
+
     </div>
-	{% endfor %}
-    </div>
+    
 	{% endfor %}
 </div>
 </body>
