@@ -48,8 +48,8 @@ def search(request):
                 }
 
         	})
-        	if gene:
-        		body["query"]["bool"]["must"].append({
+	if gene:
+		body["query"]["bool"]["must"].append({
                         "multi_match":
                         {
                             "query": gene,
@@ -112,4 +112,61 @@ def search(request):
 		ls.append(rec)
 	records = ls    	#t = loader.get_template('template/trial_list.html',{'records':records})
    	#c = Context({ 'query': query,})
-    	return render(request,'trialmatch/searchResults.html',{'records':records})
+	return render(request,'trialmatch/searchResults.html',{'records':records})
+	
+def testsearch(request):
+	disease = request.POST['diseaseType']
+	gene = request.POST['geneType']
+	age = request.POST['age']
+	gender = request.POST['gender']
+	aas = request.POST['aas']
+	stage = request.POST['stage']
+	
+	
+	body = {}
+	body["query"] = {}
+	body["query"]["bool"] = {}
+	body["query"]["bool"]["must"] = []
+	body["query"]["bool"]["should"] = []
+	
+	body["highlight"] = {}
+	body["highlight"]["pre_tags"] = ["<mark>"]
+	body["highlight"]["post_tags"] = ["</mark>"]
+	body["highlight"]["fields"] = {}
+	body["highlight"]["fields"]["title"] = {}
+	body["highlight"]["fields"]["purpose"] = {}
+	
+	if disease:
+		body["query"]["bool"]["must"].append({
+                        "multi_match":
+                        {
+                            "query": disease,
+                            "boost":3,
+                            "fields": ["title","purpose"]}})
+		
+	if gene:
+		body["query"]["bool"]["must"].append({
+                        "multi_match":
+                        {
+                            "query": gene,
+                            "boost" :3,
+                            "fields": ["title","purpose"]}})
+	if aas:
+		body["query"]["bool"]["must"].append({
+          "multi_match": {
+            "query": aas,
+            "boost" :3,
+            "fields": ["title","purpose"]}})
+
+		       
+	records = requests.post('http://127.0.0.1:9200/testindex/trials/_search', data=json.dumps(body))
+	records = records.json()["hits"]["hits"]
+	ls = []
+	for i in records:
+		rec = {}
+		rec['Title'] = i['_source']['title']
+		rec['Purpose'] = i['highlight']['purpose']
+		ls.append(rec)
+	records = ls    	#t = loader.get_template('template/trial_list.html',{'records':records})
+   	#c = Context({ 'query': query,})
+	return render(request,'trialmatch/searchResults.html',{'records':records})

@@ -1,23 +1,61 @@
+{% include "trialmatch/trial_list.html" %}
 
+<html>
+<head>
+<style>
+mark { 
+    background-color: lightblue;
+    color: black;
+}
+</style>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script>
+  function initialize() {
+	var mapCanvas = document.getElementById('map');
+	var mapOptions = {
+	  center: new google.maps.LatLng(41.0852969, -73.8097434),
+	  zoom: 15,
+	  mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	var map = new google.maps.Map(mapCanvas, mapOptions)
+  }
+  
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+    
+
+<body>
+<div class="container-fluid" >
+<div  id="map" style=" float:left; width:45%; margin-left:10px;"></div>
+<div class="list-group" >
 {% for i in records %}
-<div class = "col-md-offset-1 col-md-10" style="background-color:lavender;">    
+<div  class="list-group-item" onclick="location.href='http://www.google.com';"  style="cursor:pointer; background-color:lavender;  width:50%; margin: 2%; float:right;">    
 	{% for k,v in i.items %}
-<div class = "col-md-offset-1 col-md-11">
+<div >
 	
     		{% if k == "NCTID" %}
 		
 		<p><b>NCT ID:  </b><a target="_blank" href="https://clinicaltrials.gov/ct2/show/{{ v }}"> {{ v }} </a></p>
 		{% endif %}
 		{% if k == "Title" %}
-		
-		<p><b>Title:  </b>{{v | truncatewords:30  }} </p>
+		<p>
+		<b>Title:  </b>{{v | truncatewords:30  }} </p>
 		{% endif %}	    
 		{% if k == "Purpose" %}
+		<p>
+		<b> Purpose:  </b>
 		
-		<p><b>Purpose:  </b>{{v | truncatewords:50  }} </p>
+		{% for j in v %}
+		{{j | safe }}
+		{% endfor %}
+		</p>
 		{% endif %}
 		
     </div>
 	{% endfor %}
     </div>
 	{% endfor %}
+</div>
+</body>
+</html>

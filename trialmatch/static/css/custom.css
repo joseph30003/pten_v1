@@ -14,6 +14,24 @@
     margin-left: 40px;
 }
 
+#map1 {
+	margin-left: 50px;
+	margin-top: 30px;
+	margin-right: 10px;
+	width: 500px;
+	height: 300px;
+	background-color: #CCC;
+}
+
+#map {
+	
+	margin-top: 30px;
+	
+	height: 300px;
+	background-color: #CCC;
+}
+
+
 h1, h2, h3, h4 {
     font-family: 'Lobster';
 }
@@ -56,4 +74,19 @@ h1, h2, h3, h4 {
 
 .buttonsub{
  margin-top: 10%;	
+}
+
+#parent {
+  display: flex;
+}
+#narrow {
+  width: 200px;
+  background: lightblue;
+  /* Just so it's visible */
+}
+#wide {
+  flex: 1;
+  /* Grow to rest of container */
+  background: lightgreen;
+  /* Just so it's visible */
 }
