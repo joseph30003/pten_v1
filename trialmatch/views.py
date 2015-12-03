@@ -50,6 +50,7 @@ def search(request):
 	gender = request.POST['gender']
 	aas = request.POST['aas']
 	stage = request.POST['stage']
+	address = request.POST['address']
 	
 	
 	body = {}
@@ -62,6 +63,11 @@ def search(request):
 	body["highlight"]["fields"] = {}
 	body["highlight"]["fields"]["Purpose"] = {"number_of_fragments":0}
 	body["highlight"]["fields"]["official_title"]={"number_of_fragments":0}
+	body["highlight"]["fields"]["brief_title"]={"number_of_fragments":0}
+	body["highlight"]["fields"]["description"]={"number_of_fragments":0}
+	body["highlight"]["fields"]["Inclusion Criteria"]={"number_of_fragments":0}
+	body["highlight"]["fields"]["Conditions"]={"number_of_fragments":0}
+	body["highlight"]["fields"]["Exclusion Criteria"]={"number_of_fragments":0}	
 	body["highlight"]["pre_tags"] = ["<mark>"]
 	body["highlight"]["post_tags"] = ["</mark>"]
 			
@@ -105,7 +111,7 @@ def search(request):
 	body["query"]["bool"]["must"].append({"bool": {}})
 	body["query"]["bool"]["must"][-1]["bool"]["should"] = []
 	
-	if gender:
+	if gender and gender != "Select":
 		body["query"]["bool"]["must"][-1]["bool"]["should"].append({
                                 "match": {
                                     "gender": gender
@@ -130,8 +136,10 @@ def search(request):
                 }
 
         	})
-	records = requests.post('http://127.0.0.1:9200/clinicaltrials/mappedTrials_v2/_search', data=json.dumps(body))
+	records = requests.post('http://127.0.0.1:9200/clinicaltrials/mappedTrials_v2/_search?size=100', data=json.dumps(body))
+	total = records.json()["hits"]["total"]
 	records = records.json()["hits"]["hits"]
+	
 	ls = []
 
 	for i in records:
@@ -147,7 +155,7 @@ def search(request):
 		ls.append(rec)
 	records = ls    	#t = loader.get_template('template/trial_list.html',{'records':records})
    	#c = Context({ 'query': query,})
-	return render(request,'trialmatch/searchResults.html',{'records': ls})
+	return render(request,'trialmatch/searchResults.html',{'records': ls,'total':total,'disease':disease,'gene':gene,'aas':aas,'age':age,'gender':gender,'stage':stage,'address' : address})
 	
 def testsearch(request):
 	disease = request.POST['diseaseType']
