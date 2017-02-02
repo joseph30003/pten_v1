@@ -20,5 +20,10 @@ from django.conf.urls import include, url
 urlpatterns = (
     url(r'^admin/', include(admin.site.urls)),
     url(r'^blog/', include('blog.urls')),
-	url(r'^trialmatch/', include('trialmatch.urls')),
+    url(r'^trialmatch/', include('trialmatch.urls')),
+	url(r'^joseph/', include('joseph.urls')),
+	url(r'^validation/', include('validation.urls')),
+	url(r'^pten/', include('pten.urls')),
+	url(r'^landscape/',include('landscape.urls')),
+	url(r'^diff/',include('diff.urls')),
 )

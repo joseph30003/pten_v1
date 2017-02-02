@@ -14,8 +14,6 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
@@ -39,6 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'trialmatch',
+	'joseph',
+    'pten',
+    'widget_tweaks',
+    'validation',
+    'landscape',
+    'diff',
+
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -48,7 +53,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'clinicaltrials.urls'
@@ -76,10 +81,18 @@ WSGI_APPLICATION = 'clinicaltrials.wsgi.application'
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+     'default': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+     },
+    # 'pten_mysql': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'test',
+    #     'USER': 'root',
+    #     'PASSWORD': 'root',
+    #     'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+    #     'PORT': '3306',
+    # }
 }
 
 
@@ -122,4 +135,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
+# Import the reverse_lazy method to get the URL of a URL pattern from its name
+from django.core.urlresolvers import reverse_lazy
+# LOGIN_REDIRECT_URL setting refers to the URL to which the user will be redirected
+# after a successful login.
+LOGIN_REDIRECT_URL = reverse_lazy('trialMatch_v2')
 
+LOGIN_URL = 'login/'
